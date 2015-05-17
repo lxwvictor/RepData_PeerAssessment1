@@ -2,7 +2,7 @@
 
 
 ## Loading and preprocessing the data
-Unzip the "activity.zip" file first. Read it then and assign to "activity" data frame. Convert the date column to "date" data type.
+Unzip the "activity.zip" file first. Read it then and assign to "activity" data frame. Convert the date column to "date" data type, the inverval column converted to 4-character string for better visual effect.
 
 ```r
 unzip("./activity.zip")
@@ -54,7 +54,7 @@ actInv <- aggregate(steps ~ interval, data = activity, FUN = mean, na.action = n
 Make a time series plot of the 5-minute interval and the average number of steps taken across all days.
 
 ```r
-plot(actInv$interval, actInv$steps, type = "l", xlab = "Time Interval in 5 minutes",
+plot(actInv$interval, actInv$steps, type = "l", xlab = "Time Interval in 5 Minutes",
      ylab = "Average Number of Steps in 5-minute Across All Days", main = "Average Daily Activity Pattern")
 ```
 
@@ -98,7 +98,7 @@ for(i in 1:numNA) {
 }
 activity2[!comCases, "steps"] <- inComAct$steps
 ```
-The data frame "actDay2" is created by aggregating the steps by day. Histograms of the total number of steps taken each days shown as below.
+The data frame "actDay2" is created by aggregating the steps by day. Histograms of the total number of steps taken each day shown as below.
 
 ```r
 actDay2 <- aggregate(steps ~ date, data = activity2, FUN = sum)
@@ -111,39 +111,39 @@ hist(actDay2$steps, breaks = nrow(actDay2), xlab = "Total steps of a day",
 The mean number of steps taken per day after filling the missing values is
 
 ```r
-print(meanNum <- mean(actDay$steps))
+print(meanNum2 <- mean(actDay2$steps))
 ```
 
 ```
-## [1] 10766.19
+## [1] 9705.238
 ```
 The median number of steps taken per day after filling the missing values is
 
 ```r
-print(medianNum <- median(actDay$steps))
+print(medianNum2 <- median(actDay2$steps))
 ```
 
 ```
-## [1] 10765
+## [1] 10395
 ```
-The mean and median values both differ from the previous part of the assignment because of the filled in values. In particular, both decreased in this case.
+The mean and median values both differ from the previous part of the assignment because of the filled-in values. In particular, both decreased in this case.
 
 ## Are there differences in activity patterns between weekdays and weekends?
-The weekdays() function will tell the day by a given date. Then I used the gsub() function to figure out whether it's a "weekday" or "weekend". A panel plot is created thereafter.
+The weekdays() function will tell the day by a given date. Then I used the gsub() function to replace the day value to "weekday" or "weekend". A panel plot is created thereafter. Here I used the data frame "activity2" from previous step. It contains the filled-in missing values.
 
 ```r
-activity$daytype <- weekdays(activity$date)
-activity$daytype <- gsub("Monday", "Weekday", activity$daytype, ignore.case = TRUE)
-activity$daytype <- gsub("Tuesday", "Weekday", activity$daytype, ignore.case = TRUE)
-activity$daytype <- gsub("Wednesday", "Weekday", activity$daytype, ignore.case = TRUE)
-activity$daytype <- gsub("Thursday", "Weekday", activity$daytype, ignore.case = TRUE)
-activity$daytype <- gsub("Friday", "Weekday", activity$daytype, ignore.case = TRUE)
-activity$daytype <- gsub("Saturday", "Weekend", activity$daytype, ignore.case = TRUE)
-activity$daytype <- gsub("Sunday", "Weekend", activity$daytype, ignore.case = TRUE)
-activity$daytype <- as.factor(activity$daytype)
+activity2$daytype <- weekdays(activity2$date)
+activity2$daytype <- gsub("Monday", "Weekday", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- gsub("Tuesday", "Weekday", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- gsub("Wednesday", "Weekday", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- gsub("Thursday", "Weekday", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- gsub("Friday", "Weekday", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- gsub("Saturday", "Weekend", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- gsub("Sunday", "Weekend", activity2$daytype, ignore.case = TRUE)
+activity2$daytype <- as.factor(activity2$daytype)
 
 library(lattice)
-actInv3 <- aggregate(steps ~ interval + daytype, data = activity, FUN = mean)
+actInv3 <- aggregate(steps ~ interval + daytype, data = activity2, FUN = mean)
 actInv3$interval <- as.numeric(actInv3$interval)
 xyplot(steps ~ interval | daytype, data = actInv3, layout = c(1,2), type = "l",
        xlab = "Interval", ylab = "Average steps of an interval")
@@ -154,4 +154,4 @@ xyplot(steps ~ interval | daytype, data = actInv3, layout = c(1,2), type = "l",
 Below differences can be observered.
 
 1. In the early morning 0500 to 0900, weekday has bigger step number. It's mainly due to people need to prepare and go to work or school.
-2. For the rest of day, weekend usually has bigger step number. I guess it's because people need to move around which this is not necessary while at work or school.
+2. For the rest of day, weekend usually has bigger step number. I guess it's because people need to move around which this is not very necessary while at work or school.
